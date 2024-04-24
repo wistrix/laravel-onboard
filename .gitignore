@@ -1,0 +1,8 @@
+build
+vendor
+.fleet
+.idea
+.vscode
+.DS_Store
+composer.lock
+phpunit.xml

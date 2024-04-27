@@ -2,29 +2,21 @@
 
 namespace Wistrix\Onboard;
 
-use Wistrix\Onboard\Concerns\Onboardable;
 use Closure;
+use Wistrix\Onboard\Concerns\Onboardable;
 use Illuminate\Support\Collection;
 
 class Manager
 {
     /**
-     * The registered steps.
-     *
-     * @var Collection
-     */
-    protected Collection $steps;
-
-    /**
      * Create a new onboarding manager instance.
      *
      * @param Onboardable $model
-     * @param Collection $steps
      */
-    public function __construct(protected Onboardable $model)
-    {
-        $this->steps = new Collection;
-    }
+    public function __construct(
+        protected Onboardable $model,
+        protected Flows $flows
+    ) {}
 
     /**
      * Register a new onboarding step.
@@ -35,7 +27,9 @@ class Manager
      */
     public function register(string $route, Closure $validate): Manager
     {
-        $this->steps->push(new Step($this->model, $route, $validate));
+        $model = get_class($this->model);
+
+        $this->flows->register($model, $route, $validate);
 
         return $this;
     }
@@ -47,7 +41,7 @@ class Manager
      */
     public function steps(): Collection
     {
-        return $this->steps;
+        return $this->flows->steps($this->model);
     }
 
     /**
@@ -67,7 +61,7 @@ class Manager
      */
     public function isComplete(): bool
     {
-        return $this->steps
+        return $this->steps()
             ->filter(fn (Step $step) => $step->incomplete())
             ->isEmpty();
     }
@@ -79,7 +73,7 @@ class Manager
      */
     public function routes(): array
     {
-        return $this->steps
+        return $this->steps()
             ->map(fn (Step $step) => $step->route())
             ->toArray();
     }
@@ -91,6 +85,6 @@ class Manager
      */
     public function next(): ? Step
     {
-        return $this->steps->first(fn (Step $step) => $step->incomplete());
+        return $this->steps()->first(fn (Step $step) => $step->incomplete());
     }
 }

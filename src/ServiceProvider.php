@@ -13,7 +13,6 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(Flows::class);
     }
-
 }

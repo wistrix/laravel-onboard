@@ -14,8 +14,6 @@ trait Onboard
      */
     public function onboarding(): Manager
     {
-        return once(fn() => App::make(Manager::class, [
-            'model' => $this
-        ]));
+        return App::make(Manager::class, ['model' => $this]);
     }
 }

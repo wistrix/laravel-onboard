@@ -24,6 +24,39 @@ class User extends Model implements Onboardable
     ...
 ```
 
+### Configuration
+
+You can configure your onboarding steps by using the `Wistrix\Onboard\Facades\Onboard` facade. Use the default `App\Providers\AppServiceProvider.php` or create a new service provider.
+
+```php
+...
+use App\Models\User;
+use Wistrix\Onboard\Facades\Onboard;
+...
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        Onboard::register(
+            model: User::class, 
+            route: 'onboarding.name', 
+            validate: fn (User $model) => ! empty($model->name) 
+        );
+        
+        Onboard::register(
+            model: User::class, 
+            route: 'onboarding.username', 
+            validate: fn (User $model) => ! empty($model->username) 
+        );
+
+    }
+}
+```
+
 ### Middleware
 
 Create a new middleware and extend the abstract `Wistrix\Onboard\Middleware` class.
@@ -45,37 +78,23 @@ class UserOnboarding extends Middleware
     {
         return $request->user();
     }
-    
-    /**
-     * Register the onboarding steps.
-     *
-     * @param Manager $manager
-     * @return void
-     */
-    protected function register(Manager $manager): void
-    {
-        $manager->register(
-            route: 'onboarding.name',
-            validate: fn (User $model) => ! empty($model->name)
-        );
-        
-        $manager->register(
-            route: 'onboarding.username',
-            validate: fn (User $model) => ! empty($model->username)
-        );
-    }
 }
 ```
 
 #### Default Route
 
-By default, the `Wistrix\Onboard\Middleware` class defines the default route `home` to redirect users too, if the onboarding is complete and a step route is accessed. This can be customised by adding the `DEFAULT_ROUTE` const to your middleware.
+By default, the `Wistrix\Onboard\Middleware` class defines the default route `home` to redirect users too, if the onboarding is complete and a step route is accessed. This can be customised by adding the `defaultRoute` method to your middleware.
 
 ```php
 /**
- * The default redirect route.
+ * Get the default route.
+ *
+ * @return string
  */
-CONST string DEFAULT_ROUTE = 'home';
+protected function defaultRoute(): string
+{
+    return 'home';
+}
 ```
 
 #### Ignore Routes

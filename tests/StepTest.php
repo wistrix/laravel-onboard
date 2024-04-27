@@ -8,19 +8,25 @@ beforeEach(function () {
 });
 
 it('correctly validates a complete step', function () {
-    $step = new Step($this->user, 'step', fn() => true);
+    $step = new Step('step', fn(User $model) => $model->isTrue());
+
+    $step->initiate($this->user);
 
     $this->assertEquals($step->complete(), true);
 });
 
 it('correctly validates a incomplete step', function () {
-    $step = new Step($this->user, 'step', fn() => false);
+    $step = new Step('step', fn(User $model) => $model->isFalse());
+
+    $step->initiate($this->user);
 
     $this->assertEquals($step->incomplete(), true);
 });
 
 it('returns the defined route', function () {
-    $step = new Step($this->user, 'step', fn() => false);
+    $step = new Step('step', fn(User $model) => $model->isFalse());
+
+    $step->initiate($this->user);
 
     $this->assertEquals($step->route(), 'step');
 });

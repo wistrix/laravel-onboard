@@ -2,12 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use Wistrix\Onboard\Tests\Stubs\User;
-use Wistrix\Onboard\Tests\Stubs\UserOnboarded;
+use Wistrix\Onboard\Tests\Stubs\Middleware;
 
 beforeEach(function () {
     $this->user = new User;
 
-    Route::middleware(UserOnboarded::class)->group(function () {
+    Route::middleware(Middleware::class)->group(function () {
         Route::get('/', fn() => null)->name('home');
         Route::get('/onboarding/step1', fn() => null)->name('onboarding.step1');
         Route::get('/onboarding/step2', fn() => null)->name('onboarding.step2');;
@@ -23,9 +23,10 @@ it('continues with a null model', function () {
 it('continues with complete steps', function () {
     $this->be($this->user);
 
-    $this->user->onboarding()
-        ->register('onboarding.step1', fn() => true)
-        ->register('onboarding.step2', fn() => true);
+    $onboarding = $this->user->onboarding();
+
+    $onboarding->register('onboarding.step1', fn() => true);
+    $onboarding->register('onboarding.step2', fn() => true);
 
     $response = $this->get(route('home'));
 
@@ -35,9 +36,10 @@ it('continues with complete steps', function () {
 it('redirects with incomplete steps', function () {
     $this->be($this->user);
 
-    $this->user->onboarding()
-        ->register('onboarding.step1', fn() => true)
-        ->register('onboarding.step2', fn() => false);
+    $onboarding = $this->user->onboarding();
+
+    $onboarding->register('onboarding.step1', fn() => true);
+    $onboarding->register('onboarding.step2', fn() => false);
 
     $response = $this->get(route('home'));
 
@@ -48,12 +50,13 @@ it('redirects with incomplete steps', function () {
 it('redirects with completed steps to default route', function () {
     $this->be($this->user);
 
-    $this->user->onboarding()
-        ->register('onboarding.step1', fn() => true)
-        ->register('onboarding.step2', fn() => true);
+    $onboarding = $this->user->onboarding();
+
+    $onboarding->register('onboarding.step1', fn() => true);
+    $onboarding->register('onboarding.step2', fn() => true);
 
     $response = $this->get(route('onboarding.step1'));
 
     $response->assertStatus(302);
-    $response->assertRedirectToRoute(UserOnboarded::DEFAULT_ROUTE);
+    $response->assertRedirectToRoute('home');
 });

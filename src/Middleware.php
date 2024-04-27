@@ -10,11 +10,6 @@ use Wistrix\Onboard\Concerns\Onboardable;
 abstract class Middleware
 {
     /**
-     * The default redirect route.
-     */
-    CONST string DEFAULT_ROUTE = 'home';
-
-    /**
      * Handle an incoming request.
      *
      * @param Request $request
@@ -36,7 +31,7 @@ abstract class Middleware
         $redirectTo = match (true) {
             $this->isIgnoredRoute($request) => null,
             $onboarding->inProgress() => $onboarding->next()->route(),
-            $this->isOnboardingRoute($request, $onboarding->routes()) => self::DEFAULT_ROUTE,
+            $this->isOnboardingRoute($request, $onboarding->routes()) => $this->defaultRoute(),
             default => null
         };
 
@@ -94,5 +89,15 @@ abstract class Middleware
     protected function ignoreRoutes(): array
     {
         return [];
+    }
+
+    /**
+     * Get the default route.
+     *
+     * @return string
+     */
+    protected function defaultRoute(): string
+    {
+        return 'home';
     }
 }

@@ -8,16 +8,35 @@ use Wistrix\Onboard\Concerns\Onboardable;
 class Step
 {
     /**
+     * The onboardable model.
+     *
+     * @var Onboardable
+     */
+    protected Onboardable $model;
+
+    /**
      * Create a new onboarding step instance.
      *
      * @param string $route
      * @param Closure $validate
      */
     public function __construct(
-        protected Onboardable $model,
         protected string $route,
         protected Closure $validate
     ) {}
+
+    /**
+     * Set the given onboardable model.
+     *
+     * @param Onboardable $model
+     * @return Step
+     */
+    public function initiate(Onboardable $model): Step
+    {
+        $this->model = $model;
+
+        return $this;
+    }
 
     /**
      * Get whether the step is incomplete.

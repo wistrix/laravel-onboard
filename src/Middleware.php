@@ -26,8 +26,6 @@ abstract class Middleware
 
         $onboarding = $model->onboarding();
 
-        $this->register($onboarding);
-
         $redirectTo = match (true) {
             $this->isIgnoredRoute($request) => null,
             $onboarding->inProgress() => $onboarding->next()->route(),
@@ -49,14 +47,6 @@ abstract class Middleware
      * @return Onboardable|null
      */
     abstract protected function uses(Request $request): ? Onboardable;
-
-    /**
-     * Register the onboarding steps.
-     *
-     * @param Manager $manager
-     * @return void
-     */
-    abstract protected function register(Manager $manager): void;
 
     /**
      * Check whether the request route is an onboarding route.

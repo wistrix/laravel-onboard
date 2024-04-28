@@ -25,8 +25,8 @@ it('continues with complete steps', function () {
 
     $onboarding = $this->user->onboarding();
 
-    $onboarding->register('step1', fn() => true);
-    $onboarding->register('step2', fn() => true);
+    $onboarding->register('step1', fn(User $model) => $model->isTrue());
+    $onboarding->register('step2', fn(User $model) => $model->isTrue());
 
     $response = $this->get(route('home'));
 
@@ -38,8 +38,8 @@ it('redirects with incomplete steps', function () {
 
     $onboarding = $this->user->onboarding();
 
-    $onboarding->register('step1', fn() => true);
-    $onboarding->register('step2', fn() => false);
+    $onboarding->register('step1', fn(User $model) => $model->isTrue());
+    $onboarding->register('step2', fn(User $model) => $model->isFalse());
 
     $response = $this->get(route('home'));
 
@@ -52,8 +52,8 @@ it('redirects with completed steps to default route', function () {
 
     $onboarding = $this->user->onboarding();
 
-    $onboarding->register('step1', fn() => true);
-    $onboarding->register('step2', fn() => true);
+    $onboarding->register('step1', fn(User $model) => $model->isTrue());
+    $onboarding->register('step2', fn(User $model) => $model->isTrue());
 
     $response = $this->get(route('step1'));
 

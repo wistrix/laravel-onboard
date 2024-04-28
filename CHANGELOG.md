@@ -2,6 +2,10 @@
 
 All notable changes will be documented in this file.
 
+## 1.1.1 - 2024-04-28
+
+- Aligning middleware tests step naming
+
 ## 1.1.0 - 2024-04-27
 
 - Added `Wistrix\Onboard\Facades\Onboard` facade

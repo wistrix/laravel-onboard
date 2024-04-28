@@ -9,8 +9,8 @@ beforeEach(function () {
 
     Route::middleware(Middleware::class)->group(function () {
         Route::get('/', fn() => null)->name('home');
-        Route::get('/onboarding/step1', fn() => null)->name('onboarding.step1');
-        Route::get('/onboarding/step2', fn() => null)->name('onboarding.step2');;
+        Route::get('/step1', fn() => null)->name('step1');
+        Route::get('/step2', fn() => null)->name('step2');;
     });
 });
 
@@ -25,8 +25,8 @@ it('continues with complete steps', function () {
 
     $onboarding = $this->user->onboarding();
 
-    $onboarding->register('onboarding.step1', fn() => true);
-    $onboarding->register('onboarding.step2', fn() => true);
+    $onboarding->register('step1', fn() => true);
+    $onboarding->register('step2', fn() => true);
 
     $response = $this->get(route('home'));
 
@@ -38,13 +38,13 @@ it('redirects with incomplete steps', function () {
 
     $onboarding = $this->user->onboarding();
 
-    $onboarding->register('onboarding.step1', fn() => true);
-    $onboarding->register('onboarding.step2', fn() => false);
+    $onboarding->register('step1', fn() => true);
+    $onboarding->register('step2', fn() => false);
 
     $response = $this->get(route('home'));
 
     $response->assertStatus(302);
-    $response->assertRedirectToRoute('onboarding.step2');
+    $response->assertRedirectToRoute('step2');
 });
 
 it('redirects with completed steps to default route', function () {
@@ -52,10 +52,10 @@ it('redirects with completed steps to default route', function () {
 
     $onboarding = $this->user->onboarding();
 
-    $onboarding->register('onboarding.step1', fn() => true);
-    $onboarding->register('onboarding.step2', fn() => true);
+    $onboarding->register('step1', fn() => true);
+    $onboarding->register('step2', fn() => true);
 
-    $response = $this->get(route('onboarding.step1'));
+    $response = $this->get(route('step1'));
 
     $response->assertStatus(302);
     $response->assertRedirectToRoute('home');

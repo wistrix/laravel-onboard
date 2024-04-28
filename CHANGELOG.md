@@ -4,7 +4,7 @@ All notable changes will be documented in this file.
 
 ## 1.1.1 - 2024-04-28
 
-- Aligning middleware tests step naming
+- Aligning middleware tests step naming and validate callbacks
 
 ## 1.1.0 - 2024-04-27
 
